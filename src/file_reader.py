@@ -21,6 +21,7 @@ def get_excel_file(path_file: str = "operations.xlsx") -> list[dict]:
     try:
         logger.info(f"Читаем файл {path_file}")
         excel_data = pd.read_excel(path_object)
+        excel_data["Номер карты"] = excel_data["Номер карты"].fillna("Нет номера карты")
         logger.info(f"Файл {path_file} найден и прочитан успешно")
         operations_data = excel_data.to_dict(orient="records")
     except FileNotFoundError:
