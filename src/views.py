@@ -136,8 +136,10 @@ def get_top_amount_transactions(transactions_info: list[dict]) -> list[dict]:
 
     top_transactions = []
 
+    logger.info("Сортируем список транзакций по сумме транзакции по убыванию")
     sorted_transactions = sorted(transactions_info, key=lambda amount: (amount.get("Сумма операции", 0)))
 
+    logger.info("Успешная сортировка транзакций. Выводим топ 5 транзакций по сумме")
     for t in sorted_transactions[:5]:
         info = {}
         info["date"] = t["Дата операции"][:10]
@@ -146,4 +148,5 @@ def get_top_amount_transactions(transactions_info: list[dict]) -> list[dict]:
         info["description"] = t["Описание"]
         top_transactions.append(info)
 
+    logger.info("Передаем итоговый список транзакций с датой, суммой операции, категорией и описанием")
     return top_transactions
