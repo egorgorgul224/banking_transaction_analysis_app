@@ -1,10 +1,19 @@
+import logging
 from datetime import datetime
 from typing import Union
+
+logger = logging.getLogger("views")
+file_handler = logging.FileHandler("logs/views.log", mode="w", encoding="utf-8")
+file_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s: %(message)s")
+file_handler.setFormatter(file_formatter)
+logger.addHandler(file_handler)
+logger.setLevel(logging.DEBUG)
 
 
 def get_greeting() -> str:
     """Функция возвращает приветствие исходя из времени дня(ночь, утро, день, вечер)"""
 
+    logger.info("Получаем текущую дату и время. Возвращаем приветствие в зависимости от времени дня")
     current_time = datetime.now()
     if 6 <= current_time.hour < 12:
         return "Доброе утро"
@@ -22,6 +31,7 @@ def get_date_period(format_date: Union[str, datetime]) -> tuple[str, str]:
 
     date_format_list = ["%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M:%S.%f"]
 
+    logger.info(f"Преобразуем {format_date} в дату формата DD.MM.YYYY HH:MM:SS")
     for date_form in date_format_list:
         try:
             datetime_current_date = datetime.strptime(str(format_date), date_form)
@@ -29,6 +39,7 @@ def get_date_period(format_date: Union[str, datetime]) -> tuple[str, str]:
         except ValueError:
             continue
 
+    logger.info(f"Создаем вторую дату в формате 01.MM.YYYY 00:00:00")
     date_start = (
         datetime.now()
         .replace(
@@ -43,6 +54,7 @@ def get_date_period(format_date: Union[str, datetime]) -> tuple[str, str]:
         .strftime("%d.%m.%Y %H:%M:%S")
     )
 
+    logger.info(f"Успешно созданы две даты: {date_start}, {date_finish}")
     return date_start, date_finish
 
 
