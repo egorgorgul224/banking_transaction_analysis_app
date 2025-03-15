@@ -50,7 +50,7 @@ def get_currency_rates() -> list[dict]:
     payload: dict = {}
     headers = {"apikey": f"{apilayer_key}"}
 
-    logger.info(f"Выполняем api запрос для получения данных по курсу валют")
+    logger.info("Выполняем api запрос для получения данных по курсу валют")
     if user_currency:
         for currency in user_currency:
             currency_info = {}
@@ -76,4 +76,43 @@ def get_currency_rates() -> list[dict]:
 
     else:
         logger.info("Передан пустой список курса валют")
+        return []
+
+
+def get_stock_prices() -> list[dict]:
+    """"""
+
+    user_currency_stocks = get_user_currencies()
+    user_stock = user_currency_stocks.get("user_stocks")
+    stock_result = []
+
+    load_dotenv()
+    alphavantage_key = os.getenv("FINNHUB_KEY")
+
+    logger.info("Выполняем api запрос для получения данных по акциям")
+    if user_stock:
+        for stock in user_stock:
+            stock_info = {}
+            url = f"https://finnhub.io/api/v1/quote?symbol={stock}&token={alphavantage_key}"
+
+            try:
+                response = requests.get(url)
+                result = response.json()
+
+                stock_info["stock"] = stock
+                stock_info["price"] = result["c"]
+                stock_result.append(stock_info)
+
+            except requests.exceptions.ConnectionError:
+                logger.error("Ошибка подключения. Проверьте интернет-соединение")
+            except requests.exceptions.HTTPError:
+                logger.error("HTTP ошибка. Проверьте URL-адрес.")
+            except requests.exceptions.RequestException:
+                logger.error("Произошла ошибка.")
+
+        logger.info("Данные успешно получены")
+        return stock_result
+
+    else:
+        logger.info("Передан пустой список акций")
         return []

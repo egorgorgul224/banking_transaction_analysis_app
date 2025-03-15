@@ -39,7 +39,7 @@ def get_date_period(format_date: Union[str, datetime]) -> tuple[str, str]:
         except ValueError:
             continue
 
-    logger.info(f"Создаем вторую дату в формате 01.MM.YYYY 00:00:00")
+    logger.info("Создаем вторую дату в формате 01.MM.YYYY 00:00:00")
     date_start = (
         datetime.now()
         .replace(
@@ -102,7 +102,6 @@ def get_cards_spent_cashback(transactions_info: list[dict], cards_number: list) 
     for card in cards_number:
         expence_count = 0
         for transaction in transactions_info:
-            current_time = datetime.strptime(str(transaction.get("Дата операции")), "%d.%m.%Y %H:%M:%S")
             if transaction.get("Номер карты", "Нет номера карты") == card and transaction.get("Сумма платежа", 0) < 0:
                 expence_count += transaction.get("Сумма платежа", 0)
         total_spent.append(round(-expence_count, 2))
