@@ -4,13 +4,28 @@ from typing import Union
 
 from src.external_api import get_currency_rates, get_stock_prices
 from src.file_reader import get_excel_file
-from src.views import (get_cards_info, get_cards_number, get_cards_spent_cashback, get_date_period, get_greeting,
-                       get_period_transactions, get_top_amount_transactions)
+from src.views import (
+    get_cards_info,
+    get_cards_number,
+    get_cards_spent_cashback,
+    get_date_period,
+    get_greeting,
+    get_period_transactions,
+    get_top_amount_transactions,
+)
 
 
-def main(user_date: Union[str, datetime] = datetime.now()) -> str:
+def main() -> str:
     """Функция принимает дату в формате YYYY-MM-DD HH:MM:SS и возвращает данные о сумме расходов и кэшбеку по каждой
     карте в периоде с начала месяца по дату пользователя(месяц берется из даты пользователя)"""
+
+    while True:
+        user_date = input("Введите дату в формате YYYY-MM-DD HH:MM:SS или нажмите Enter(текущая дата):")
+        try:
+            if user_date == "" or datetime.strptime(user_date, "%Y-%m-%d %H:%M:%S"):
+                break
+        except ValueError:
+            print("Вы ввели некорректную дату")
 
     result_info = {}
     user_greeting = get_greeting()
@@ -37,4 +52,4 @@ def main(user_date: Union[str, datetime] = datetime.now()) -> str:
 
 
 if __name__ == "__main__":
-    print(main("2020-03-04 19:44:00"))
+    print(main())

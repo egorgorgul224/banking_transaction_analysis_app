@@ -25,19 +25,20 @@ def get_greeting() -> str:
         return "Доброй ночи"
 
 
-def get_date_period(format_date: Union[str, datetime]) -> tuple[str, str]:
+def get_date_period(format_date: Union[str, datetime] = datetime.now()) -> tuple[str, str]:
     """Функция принимает на вход дату и время в формате YYYY-MM-DD HH:MM:SS(по умолчанию текущая дата и время).
     Возвращает текущую дату и дату начала месяца в формате DD.MM.YYYY HH:MM:SS"""
 
     date_format_list = ["%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M:%S.%f"]
 
     logger.info(f"Преобразуем {format_date} в дату формата DD.MM.YYYY HH:MM:SS")
+    datetime_current_date = datetime.now()
     for date_form in date_format_list:
         try:
             datetime_current_date = datetime.strptime(str(format_date), date_form)
-            date_finish = datetime_current_date.strftime("%d.%m.%Y %H:%M:%S")
         except ValueError:
             continue
+    date_finish = datetime_current_date.strftime("%d.%m.%Y %H:%M:%S")
 
     logger.info("Создаем вторую дату в формате 01.MM.YYYY 00:00:00")
     date_start = (
@@ -100,12 +101,12 @@ def get_cards_spent_cashback(transactions_info: list[dict], cards_number: list) 
 
     logger.info("Проходим по списку карт за переданный период времени и суммируем траты и кэшбек")
     for card in cards_number:
-        expence_count = 0
+        expense_count = 0
         for transaction in transactions_info:
             if transaction.get("Номер карты", "Нет номера карты") == card and transaction.get("Сумма платежа", 0) < 0:
-                expence_count += transaction.get("Сумма платежа", 0)
-        total_spent.append(round(-expence_count, 2))
-        cashback_sum = expence_count * 0.01
+                expense_count += transaction.get("Сумма платежа", 0)
+        total_spent.append(round(-expense_count, 2))
+        cashback_sum = expense_count * 0.01
         cashback.append(round(-cashback_sum, 2))
 
     logger.info("Передаем список суммы трат и кэшбека по всем картам из переданного списка")
