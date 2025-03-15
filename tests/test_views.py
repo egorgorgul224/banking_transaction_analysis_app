@@ -3,7 +3,8 @@ from unittest.mock import patch
 
 import pytest
 
-from src.views import get_cards_number, get_cards_spent_cashback, get_date_period, get_greeting, get_cards_info
+from src.views import (get_cards_info, get_cards_number, get_cards_spent_cashback, get_date_period, get_greeting,
+                       get_period_transactions, get_top_amount_transactions)
 
 
 @patch("src.views.datetime")
@@ -44,50 +45,88 @@ def test_get_date_period_now(now_data: datetime, expected_result: tuple[str, str
 
 @pytest.mark.parametrize(
     "start_date, finish_date, expected_result",
-    [("01.01.2018 00:00:00", "25.01.2018 23:00:00", ["*0001"])],
+    [
+        (
+            "01.01.2018 00:00:00",
+            "25.01.2018 23:00:00",
+            [
+                {
+                    "Дата операции": "03.01.2018 14:55:21",
+                    "Номер карты": "*0001",
+                    "Сумма операции": -21.0,
+                    "Валюта операции": "RUB",
+                    "Сумма платежа": -21.0,
+                    "Валюта платежа": "RUB",
+                    "Категория": "Супермаркеты",
+                    "Описание": "Тест операция 1",
+                    "Бонусы (включая кэшбэк)": 0,
+                }
+            ],
+        )
+    ],
 )
-def test_get_cards_number(
-    transaction_list: list[dict], start_date: str, finish_date: str, expected_result: list
+def test_get_period_transactions(
+    transaction_list: list[dict], start_date: str, finish_date: str, expected_result: list[dict]
 ) -> None:
-    """Тест проверяет корректный вывод непустого списка номеров карт в формате *XXXX, где X - число от 0 до 9, за
-    период с начала месяца по переданную дату(пользовательскую или текущую)"""
-    assert get_cards_number(transaction_list, start_date, finish_date) == expected_result
+    """Тест проверяет корректный вывод списка транзакций за переданный период времени."""
+
+    assert get_period_transactions(transaction_list, start_date, finish_date) == expected_result
 
 
 @pytest.mark.parametrize(
     "start_date, finish_date, expected_result",
-    [("01.12.2023 00:00:00", "25.12.2023 23:00:00", [])],
+    [("01.01.2025 00:00:00", "25.01.2025 23:00:00", [])],
 )
-def test_get_cards_number_empty(
-    transaction_list: list[dict], start_date: str, finish_date: str, expected_result: list
+def test_get_period_transactions_empty(
+    transaction_list: list[dict], start_date: str, finish_date: str, expected_result: list[dict]
 ) -> None:
-    """Тест проверяет корректный вывод пустого списка, если период с начала месяца по переданную
-    дату(пользовательскую или текущую) не было транзакций."""
-    assert get_cards_number(transaction_list, start_date, finish_date) == expected_result
+    """Тест проверяет корректный вывод пустого списка транзакций за переданный период времени."""
+
+    assert get_period_transactions(transaction_list, start_date, finish_date) == expected_result
 
 
 @pytest.mark.parametrize(
-    "cards_number, start_date, finish_date, expected_result",
-    [(["*0001"], "01.01.2018 00:00:00", "25.01.2018 23:00:00", ([21.0], [0.21]))],
+    "expected_result",
+    [["*0001"]],
+)
+def test_get_cards_number(transaction_period_list: list[dict], expected_result: list) -> None:
+    """Тест проверяет корректный вывод непустого списка номеров карт в формате *XXXX, где X - число от 0 до 9, за
+    период с начала месяца по переданную дату(пользовательскую или текущую)"""
+    assert get_cards_number(transaction_period_list) == expected_result
+
+
+@pytest.mark.parametrize(
+    "expected_result",
+    [[]],
+)
+def test_get_cards_number_empty(transaction_period_list_empty: list[dict], expected_result: list) -> None:
+    """Тест проверяет корректный вывод пустого списка, если период с начала месяца по переданную
+    дату(пользовательскую или текущую) не было транзакций."""
+    assert get_cards_number(transaction_period_list_empty) == expected_result
+
+
+@pytest.mark.parametrize(
+    "cards_number, expected_result",
+    [(["*0001"], ([21.0], [0.21]))],
 )
 def test_get_cards_spent_cashback(
-    transaction_list: list[dict], cards_number: list, start_date: str, finish_date: str, expected_result: list
+    transaction_period_list: list[dict], cards_number: list, expected_result: list
 ) -> None:
     """Тест проверяет корректный возврат суммы трат и кэшбека по всем картам из непустого списка за переданный период
     времени."""
-    assert get_cards_spent_cashback(transaction_list, cards_number, start_date, finish_date) == expected_result
+    assert get_cards_spent_cashback(transaction_period_list, cards_number) == expected_result
 
 
 @pytest.mark.parametrize(
-    "cards_number, start_date, finish_date, expected_result",
-    [([], "01.01.2024 00:00:00", "25.01.2024 23:00:00", ([], []))],
+    "cards_number, expected_result",
+    [([], ([], []))],
 )
 def test_get_cards_spent_cashback_empty(
-    transaction_list: list[dict], cards_number: list, start_date: str, finish_date: str, expected_result: list
+    transaction_period_list_empty: list[dict], cards_number: list, expected_result: list
 ) -> None:
     """Тест проверяет корректный возврат пустого списка по тратам и кэшбеку из пустого списка с картами за переданный
     период времени."""
-    assert get_cards_spent_cashback(transaction_list, cards_number, start_date, finish_date) == expected_result
+    assert get_cards_spent_cashback(transaction_period_list_empty, cards_number) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -118,3 +157,26 @@ def test_get_cards_info_empty(
 ) -> None:
     """Тест проверяет корректный вывод пустого списка словарей по карте, сумме тратам, сумме кэшбека."""
     assert get_cards_info(cards_number, total_spent, cashback) == expected_result
+
+
+@pytest.mark.parametrize(
+    "expected_result",
+    [
+        [{"date": "03.01.2018", "amount": 21.0, "category": "Супермаркеты", "description": "Тест операция 1"}],
+    ],
+)
+def test_get_top_amount_transactions(transaction_period_list: list[dict], expected_result: list[dict]) -> None:
+    """Тест проверяет корректный вывод списка словарей(дата операции, сумма, категория, описание) по заданному периоду
+    времени."""
+    assert get_top_amount_transactions(transaction_period_list) == expected_result
+
+
+@pytest.mark.parametrize(
+    "expected_result",
+    [[]],
+)
+def test_get_top_amount_transactions_empty(
+    transaction_period_list_empty: list[dict], expected_result: list[dict]
+) -> None:
+    """Тест проверяет корректный вывод пустого списка, если по заданному периоду времени не было транзакций."""
+    assert get_top_amount_transactions(transaction_period_list_empty) == expected_result

@@ -2,7 +2,8 @@ from datetime import datetime
 from typing import Union
 
 from src.file_reader import get_excel_file
-from src.views import get_greeting, get_date_period, get_cards_number, get_cards_spent_cashback, get_cards_info
+from src.views import (get_cards_info, get_cards_number, get_cards_spent_cashback, get_date_period, get_greeting,
+                       get_top_amount_transactions, get_period_transactions)
 
 
 def main(user_date: Union[str, datetime] = datetime.now()) -> dict:
@@ -13,13 +14,16 @@ def main(user_date: Union[str, datetime] = datetime.now()) -> dict:
     user_greeting = get_greeting()
     transactions_data = get_excel_file()
     start, finish = get_date_period(user_date)
-    cards_number = get_cards_number(transactions_data, start, finish)
-    total_spent, cashback = get_cards_spent_cashback(transactions_data, cards_number, start, finish)
+    transactions_info = get_period_transactions(transactions_data, start, finish)
+    cards_number = get_cards_number(transactions_info)
+    total_spent, cashback = get_cards_spent_cashback(transactions_info, cards_number)
 
-    result = get_cards_info(cards_number, total_spent, cashback)
+    result_cards_info = get_cards_info(cards_number, total_spent, cashback)
+    result_top_transactions = get_top_amount_transactions(transactions_info)
 
     result_info["greeting"] = user_greeting
-    result_info["cards"] = result
+    result_info["cards"] = result_cards_info
+    result_info["top_transactions"] = result_top_transactions
 
     return result_info
 

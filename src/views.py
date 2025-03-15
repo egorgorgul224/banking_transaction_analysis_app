@@ -58,49 +58,52 @@ def get_date_period(format_date: Union[str, datetime]) -> tuple[str, str]:
     return date_start, date_finish
 
 
-def get_cards_number(transactions_data: list[dict], start: str, finish: str) -> list:
+def get_period_transactions(transactions_data: list[dict], start: str, finish: str) -> list[dict]:
+    """Функция принимает список транзакций и период(начальную дату и конечную дату). Возвращает список всех
+    транзакций за данный период."""
+
+    transactions_for_period = []
+    start_date = datetime.strptime(start, "%d.%m.%Y %H:%M:%S")
+    finish_date = datetime.strptime(finish, "%d.%m.%Y %H:%M:%S")
+
+    logger.info("Проходим по транзакциям и создаем список транзакций за переданный период")
+    for transaction in transactions_data:
+        current_time = datetime.strptime(str(transaction.get("Дата операции")), "%d.%m.%Y %H:%M:%S")
+        if start_date <= current_time <= finish_date:
+            transactions_for_period.append(transaction)
+
+    logger.info("Передаем итоговый список транзакций за период")
+    return transactions_for_period
+
+
+def get_cards_number(transactions_info: list[dict]) -> list:
     """Функция принимает на вход список с транзакциями, начало периода и конец периода. Возвращает список номеров
     всех карт за данный период в формате XXXX, где X - число от 0 до 9."""
 
     cards_number = []
-    start_date = datetime.strptime(start, "%d.%m.%Y %H:%M:%S")
-    finish_date = datetime.strptime(finish, "%d.%m.%Y %H:%M:%S")
 
     logger.info("Проходим по списку транзакций и ищем карты за переданный период времени")
-    for transaction in transactions_data:
-        current_time = datetime.strptime(str(transaction.get("Дата операции")), "%d.%m.%Y %H:%M:%S")
-        if start_date <= current_time <= finish_date:
-            if (
-                transaction.get("Номер карты") not in cards_number
-                and transaction.get("Номер карты") != "Нет номера карты"
-            ):
-                cards_number.append(transaction.get("Номер карты"))
+    for transaction in transactions_info:
+        if transaction.get("Номер карты") not in cards_number and transaction.get("Номер карты") != "Нет номера карты":
+            cards_number.append(transaction.get("Номер карты"))
 
     logger.info("Передаем список с номерами карт")
     return cards_number
 
 
-def get_cards_spent_cashback(
-    transactions_data: list[dict], cards_number: list, start: str, finish: str
-) -> tuple[list, list]:
-    """Функция принимает на вход список с транзакциями, список карт, начало периода и конец периода. Возвращает список
-    суммы трат и кэшбека по каждой карте."""
+def get_cards_spent_cashback(transactions_info: list[dict], cards_number: list) -> tuple[list, list]:
+    """Функция принимает на вход список с транзакциями, список карт. Возвращает список суммы трат и кэшбека по каждой
+    карте."""
 
     total_spent = []
     cashback = []
-    start_date = datetime.strptime(start, "%d.%m.%Y %H:%M:%S")
-    finish_date = datetime.strptime(finish, "%d.%m.%Y %H:%M:%S")
 
     logger.info("Проходим по списку карт за переданный период времени и суммируем траты и кэшбек")
     for card in cards_number:
         expence_count = 0
-        for transaction in transactions_data:
+        for transaction in transactions_info:
             current_time = datetime.strptime(str(transaction.get("Дата операции")), "%d.%m.%Y %H:%M:%S")
-            if (
-                start_date <= current_time <= finish_date
-                and transaction.get("Номер карты", "Нет номера карты") == card
-                and transaction.get("Сумма платежа", 0) < 0
-            ):
+            if transaction.get("Номер карты", "Нет номера карты") == card and transaction.get("Сумма платежа", 0) < 0:
                 expence_count += transaction.get("Сумма платежа", 0)
         total_spent.append(round(-expence_count, 2))
         cashback_sum = expence_count * 0.01
@@ -126,3 +129,21 @@ def get_cards_info(cards_number: list, total_spent: list, cashback: list) -> lis
 
     logger.info("Передаем список словарей по картам, сумме трат и сумме кэшбека")
     return cards_info
+
+
+def get_top_amount_transactions(transactions_info: list[dict]) -> list[dict]:
+    """Функция принимает на вход список транзакций за период времени. Возвращает топ 5 транзакций по сумме платежа."""
+
+    top_transactions = []
+
+    sorted_transactions = sorted(transactions_info, key=lambda amount: (amount.get("Сумма операции", 0)))
+
+    for t in sorted_transactions[:5]:
+        info = {}
+        info["date"] = t["Дата операции"][:10]
+        info["amount"] = -t["Сумма операции"]
+        info["category"] = t["Категория"]
+        info["description"] = t["Описание"]
+        top_transactions.append(info)
+
+    return top_transactions
