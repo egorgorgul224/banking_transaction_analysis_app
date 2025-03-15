@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import pytest
 
-from src.views import get_cards_number, get_cards_spent_cashback, get_date_period, get_greeting
+from src.views import get_cards_number, get_cards_spent_cashback, get_date_period, get_greeting, get_cards_info
 
 
 @patch("src.views.datetime")
@@ -88,3 +88,33 @@ def test_get_cards_spent_cashback_empty(
     """Тест проверяет корректный возврат пустого списка по тратам и кэшбеку из пустого списка с картами за переданный
     период времени."""
     assert get_cards_spent_cashback(transaction_list, cards_number, start_date, finish_date) == expected_result
+
+
+@pytest.mark.parametrize(
+    "cards_number, total_spent, cashback, expected_result",
+    [
+        (
+            ["*0001", "*0002"],
+            [100.0, 670.0],
+            [1, 6.7],
+            [
+                {"last_digits": "0001", "total_spent": 100.0, "cashback": 1},
+                {"last_digits": "0002", "total_spent": 670.0, "cashback": 6.7},
+            ],
+        )
+    ],
+)
+def test_get_cards_info(cards_number: list, total_spent: list, cashback: list, expected_result: list[dict]) -> None:
+    """Тест проверяет корректный вывод списка словарей по карте, сумме тратам, сумме кэшбека."""
+    assert get_cards_info(cards_number, total_spent, cashback) == expected_result
+
+
+@pytest.mark.parametrize(
+    "cards_number, total_spent, cashback, expected_result",
+    [([], [], [], [])],
+)
+def test_get_cards_info_empty(
+    cards_number: list, total_spent: list, cashback: list, expected_result: list[dict]
+) -> None:
+    """Тест проверяет корректный вывод пустого списка словарей по карте, сумме тратам, сумме кэшбека."""
+    assert get_cards_info(cards_number, total_spent, cashback) == expected_result

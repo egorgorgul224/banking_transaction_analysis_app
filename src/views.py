@@ -116,6 +116,7 @@ def get_cards_info(cards_number: list, total_spent: list, cashback: list) -> lis
 
     cards_info = []
 
+    logger.info("Проходим по списку карт и создаем словарь с номером карты, суммой трат, суммой кэшбека")
     for number in range(len(cards_number)):
         info = {}
         info["last_digits"] = cards_number[number][-4:]
@@ -123,8 +124,5 @@ def get_cards_info(cards_number: list, total_spent: list, cashback: list) -> lis
         info["cashback"] = cashback[number]
         cards_info.append(info)
 
+    logger.info("Передаем список словарей по картам, сумме трат и сумме кэшбека")
     return cards_info
-
-
-if __name__ == "__main__":
-    print(1)
