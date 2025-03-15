@@ -63,15 +63,20 @@ def get_cards_number(transactions_data: list[dict], start: str, finish: str) -> 
     всех карт за данный период в формате XXXX, где X - число от 0 до 9."""
 
     cards_number = []
+    start_date = datetime.strptime(start, "%d.%m.%Y %H:%M:%S")
+    finish_date = datetime.strptime(finish, "%d.%m.%Y %H:%M:%S")
 
+    logger.info("Проходим по списку транзакций и ищем карты за переданный период времени")
     for transaction in transactions_data:
-        if start <= str(transaction.get("Дата операции")) <= finish:
+        current_time = datetime.strptime(str(transaction.get("Дата операции")), "%d.%m.%Y %H:%M:%S")
+        if start_date <= current_time <= finish_date:
             if (
                 transaction.get("Номер карты") not in cards_number
                 and transaction.get("Номер карты") != "Нет номера карты"
             ):
                 cards_number.append(transaction.get("Номер карты"))
 
+    logger.info("Передаем список с номерами карт")
     return cards_number
 
 

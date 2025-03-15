@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import pytest
 
-from src.views import get_date_period, get_greeting
+from src.views import get_date_period, get_greeting, get_cards_number
 
 
 @patch("src.views.datetime")
@@ -42,6 +42,25 @@ def test_get_date_period_now(now_data: datetime, expected_result: tuple[str, str
     assert get_date_period(now_data) == expected_result
 
 
-def get_cards_number() -> None:
-    """"""
-    pass
+@pytest.mark.parametrize(
+    "start_date, finish_date, expected_result",
+    [("01.01.2018 00:00:00", "25.01.2018 23:00:00", ["*0001"])],
+)
+def test_get_cards_number(
+    transaction_list: list[dict], start_date: str, finish_date: str, expected_result: list
+) -> None:
+    """Тест проверяет корректный вывод непустого списка номеров карт в формате *XXXX, где X - число от 0 до 9, за
+    период с начала месяца по переданную дату(пользовательскую или текущую)"""
+    assert get_cards_number(transaction_list, start_date, finish_date) == expected_result
+
+
+@pytest.mark.parametrize(
+    "start_date, finish_date, expected_result",
+    [("01.12.2023 00:00:00", "25.12.2023 23:00:00", [])],
+)
+def test_get_cards_number_empty(
+    transaction_list: list[dict], start_date: str, finish_date: str, expected_result: list
+) -> None:
+    """Тест проверяет корректный вывод пустого списка, если период с начала месяца по переданную
+    дату(пользовательскую или текущую) не было транзакций."""
+    assert get_cards_number(transaction_list, start_date, finish_date) == expected_result
