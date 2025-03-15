@@ -3,8 +3,15 @@ from unittest.mock import patch
 
 import pytest
 
-from src.views import (get_cards_info, get_cards_number, get_cards_spent_cashback, get_date_period, get_greeting,
-                       get_period_transactions, get_top_amount_transactions)
+from src.views import (
+    get_cards_info,
+    get_cards_number,
+    get_cards_spent_cashback,
+    get_date_period,
+    get_greeting,
+    get_period_transactions,
+    get_top_amount_transactions,
+)
 
 
 @patch("src.views.datetime")
