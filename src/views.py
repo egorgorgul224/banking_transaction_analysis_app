@@ -88,12 +88,16 @@ def get_cards_spent_cashback(
 
     total_spent = []
     cashback = []
+    start_date = datetime.strptime(start, "%d.%m.%Y %H:%M:%S")
+    finish_date = datetime.strptime(finish, "%d.%m.%Y %H:%M:%S")
 
+    logger.info("Проходим по списку карт за переданный период времени и суммируем траты и кэшбек")
     for card in cards_number:
         expence_count = 0
         for transaction in transactions_data:
+            current_time = datetime.strptime(str(transaction.get("Дата операции")), "%d.%m.%Y %H:%M:%S")
             if (
-                start <= transaction.get("Дата операции", "01.01.1980") <= finish
+                start_date <= current_time <= finish_date
                 and transaction.get("Номер карты", "Нет номера карты") == card
                 and transaction.get("Сумма платежа", 0) < 0
             ):
@@ -102,6 +106,7 @@ def get_cards_spent_cashback(
         cashback_sum = expence_count * 0.01
         cashback.append(round(-cashback_sum, 2))
 
+    logger.info("Передаем список суммы трат и кэшбека по всем картам из переданного списка")
     return total_spent, cashback
 
 

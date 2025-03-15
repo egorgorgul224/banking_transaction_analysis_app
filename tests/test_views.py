@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import pytest
 
-from src.views import get_date_period, get_greeting, get_cards_number
+from src.views import get_cards_number, get_cards_spent_cashback, get_date_period, get_greeting
 
 
 @patch("src.views.datetime")
@@ -64,3 +64,27 @@ def test_get_cards_number_empty(
     """Тест проверяет корректный вывод пустого списка, если период с начала месяца по переданную
     дату(пользовательскую или текущую) не было транзакций."""
     assert get_cards_number(transaction_list, start_date, finish_date) == expected_result
+
+
+@pytest.mark.parametrize(
+    "cards_number, start_date, finish_date, expected_result",
+    [(["*0001"], "01.01.2018 00:00:00", "25.01.2018 23:00:00", ([21.0], [0.21]))],
+)
+def test_get_cards_spent_cashback(
+    transaction_list: list[dict], cards_number: list, start_date: str, finish_date: str, expected_result: list
+) -> None:
+    """Тест проверяет корректный возврат суммы трат и кэшбека по всем картам из непустого списка за переданный период
+    времени."""
+    assert get_cards_spent_cashback(transaction_list, cards_number, start_date, finish_date) == expected_result
+
+
+@pytest.mark.parametrize(
+    "cards_number, start_date, finish_date, expected_result",
+    [([], "01.01.2024 00:00:00", "25.01.2024 23:00:00", ([], []))],
+)
+def test_get_cards_spent_cashback_empty(
+    transaction_list: list[dict], cards_number: list, start_date: str, finish_date: str, expected_result: list
+) -> None:
+    """Тест проверяет корректный возврат пустого списка по тратам и кэшбеку из пустого списка с картами за переданный
+    период времени."""
+    assert get_cards_spent_cashback(transaction_list, cards_number, start_date, finish_date) == expected_result
