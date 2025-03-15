@@ -13,11 +13,12 @@ logger.addHandler(file_handler)
 logger.setLevel(logging.DEBUG)
 
 
-def get_excel_file(path_file: str = "operations.xlsx") -> list[dict]:
+def get_excel_file(path_file: str = "operations") -> list[dict]:
     """Функция принимает на вход название excel файла и возвращает список словарей с транзакциями"""
 
     logger.info(f"Задаем путь до файла {path_file}")
-    path_object = Path(BASEDIR / "data" / path_file)
+    path_object = Path(f"{BASEDIR}/data/{path_file}.xlsx")
+    print(path_object)
     try:
         logger.info(f"Читаем файл {path_file}")
         excel_data = pd.read_excel(path_object)
