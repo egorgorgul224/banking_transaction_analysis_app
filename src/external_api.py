@@ -58,7 +58,7 @@ def get_currency_rates() -> list[dict]:
             url = f"https://api.apilayer.com/exchangerates_data/latest?symbols=RUB&base={currency}"
 
             try:
-                response = requests.request("GET", url, headers=headers, data=payload, timeout=5)
+                response = requests.request("GET", url, headers=headers, data=payload)
                 result = response.json()
 
                 currency_info["currency"] = currency
