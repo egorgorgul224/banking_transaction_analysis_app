@@ -7,14 +7,15 @@ from typing import Any
 import requests
 from dotenv import load_dotenv
 
+BASEDIR = Path(__file__).resolve().parent.parent
+logg_path = Path(BASEDIR / "logs")
+
 logger = logging.getLogger("external_api")
-file_handler = logging.FileHandler("logs/external_api.log", mode="w", encoding="utf-8")
+file_handler = logging.FileHandler(f"{logg_path}/external_api.log", mode="w", encoding="utf-8")
 file_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s: %(message)s")
 file_handler.setFormatter(file_formatter)
 logger.addHandler(file_handler)
 logger.setLevel(logging.DEBUG)
-
-BASEDIR = Path(__file__).resolve().parent.parent
 
 
 def get_user_currencies(path_file: str = "user_settings") -> Any:
@@ -82,7 +83,7 @@ def get_currency_rates() -> list[dict]:
 
 
 def get_stock_prices() -> list[dict]:
-    """"""
+    """Функция возвращает список словарей с названием акции и ее стоимостью."""
 
     user_currency_stocks = get_user_currencies()
     user_stock = user_currency_stocks.get("user_stocks")

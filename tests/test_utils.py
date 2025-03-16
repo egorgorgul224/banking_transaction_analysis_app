@@ -1,5 +1,5 @@
 from datetime import datetime
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -8,7 +8,7 @@ from src.utils import (get_cards_info, get_cards_number, get_cards_spent_cashbac
 
 
 @patch("src.utils.datetime")
-def test_get_greeting(mock_datetime) -> None:
+def test_get_greeting(mock_datetime: MagicMock) -> None:
     """Тест проверяет корректный вывод приветствия в зависимости от текущего времени."""
     mock_datetime.now.return_value.hour = 10
     assert get_greeting() == "Доброе утро"

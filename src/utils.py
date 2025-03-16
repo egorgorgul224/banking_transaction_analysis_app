@@ -1,9 +1,13 @@
 import logging
 from datetime import datetime
+from pathlib import Path
 from typing import Union
 
+BASEDIR = Path(__file__).resolve().parent.parent
+logg_path = Path(BASEDIR / "logs")
+
 logger = logging.getLogger("utils")
-file_handler = logging.FileHandler("logs/utils.log", mode="w", encoding="utf-8")
+file_handler = logging.FileHandler(f"{logg_path}/utils.log", mode="w", encoding="utf-8")
 file_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s: %(message)s")
 file_handler.setFormatter(file_formatter)
 logger.addHandler(file_handler)

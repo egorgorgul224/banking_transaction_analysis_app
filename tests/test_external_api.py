@@ -1,12 +1,8 @@
 import json
-import os
 from pathlib import Path
-from unittest.mock import mock_open, patch
+from unittest.mock import MagicMock, mock_open, patch
 
-import pytest
-from dotenv import load_dotenv
-
-from src.external_api import get_currency_rates, get_user_currencies
+from src.external_api import get_currency_rates, get_user_currencies, get_stock_prices
 
 BASEDIR = Path(__file__).resolve().parent.parent
 
@@ -33,7 +29,7 @@ def test_get_user_currencies_empty_file() -> None:
 
 @patch("builtins.open", new_callable=mock_open)
 @patch("json.load", side_effect=json.JSONDecodeError("Expecting value", "", 0))
-def test_get_user_currencies_json_error(mock_json_load, mock_open) -> None:
+def test_get_user_currencies_json_error(mock_json_load: MagicMock, mock_open: MagicMock) -> None:
     """Тест проверяет корректную обработку ошибки JSONDecodeError"""
 
     result = get_user_currencies("fake_path")
@@ -45,7 +41,7 @@ def test_get_user_currencies_json_error(mock_json_load, mock_open) -> None:
 
 @patch("builtins.open", new_callable=mock_open)
 @patch("json.load", side_effect=FileNotFoundError("Expecting value", "", 0))
-def test_get_user_currencies_file_not_found_error(mock_json_load, mock_open) -> None:
+def test_get_user_currencies_file_not_found_error(mock_json_load: MagicMock, mock_open: MagicMock) -> None:
     """Тест проверяет корректную обработку ошибки FileNotFoundError, когда файл не найден"""
 
     result = get_user_currencies("fake_path")
@@ -57,12 +53,10 @@ def test_get_user_currencies_file_not_found_error(mock_json_load, mock_open) -> 
 
 @patch("src.external_api.get_user_currencies")
 @patch("requests.request")
-def test_get_currency_rates(mocked_get, mocked_get_user_currencies) -> None:
+def test_get_currency_rates(mocked_get: MagicMock, mocked_get_user_currencies: MagicMock) -> None:
     """Тест проверяет корректный вывод списка словарей с названием курса и ставкой в рублях"""
 
-    mocked_get_user_currencies.return_value = {"user_currencies": ["USD"],
-                                               "user_stocks": ["AAPL"]
-                                               }
+    mocked_get_user_currencies.return_value = {"user_currencies": ["USD"], "user_stocks": ["AAPL"]}
     mocked_get.return_value.json.return_value = {
         "base": "USD",
         "date": "2025-03-15",
@@ -71,6 +65,21 @@ def test_get_currency_rates(mocked_get, mocked_get_user_currencies) -> None:
         "timestamp": 1742048104,
     }
     result = get_currency_rates()
-    assert result ==  [{"currency": "USD", "rate": 85.37}]
+    assert result == [{"currency": "USD", "rate": 85.37}]
+    mocked_get_user_currencies.assert_called_once_with()
+    mocked_get.assert_called()
+
+
+@patch("src.external_api.get_stock_prices")
+@patch("requests.get")
+def test_get_stock_prices(mocked_get: MagicMock, mocked_get_user_currencies: MagicMock) -> None:
+    """Тест проверяет корректный вывод списка словарей с названием курса и ставкой в рублях"""
+
+    mocked_get_user_currencies.return_value = {"user_currencies": ["USD"], "user_stocks": ["AAPL"]}
+    mocked_get.return_value.json.return_value = [{
+        {'stock': 'AAPL', 'price': 213.49}
+    }]
+    result = get_stock_prices()
+    assert result == [{"stock": "AAPL", "price": 213.49}]
     mocked_get_user_currencies.assert_called_once_with()
     mocked_get.assert_called()

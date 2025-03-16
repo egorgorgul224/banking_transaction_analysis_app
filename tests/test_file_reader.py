@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pandas as pd
 
@@ -6,7 +6,7 @@ from src.file_reader import get_excel_file
 
 
 @patch("pandas.read_excel")
-def test_excel_file_reader(mock_read_excel) -> None:
+def test_excel_file_reader(mock_read_excel: MagicMock) -> None:
     """Тест проверяет корректный возврат списка словарей с транзакциями из указанного excel файла"""
 
     mock_data = pd.DataFrame({"id": [650703, 3598919], "state": ["EXECUTED", "EXECUTED"]})
@@ -21,7 +21,7 @@ def test_excel_file_reader(mock_read_excel) -> None:
 
 
 @patch("pandas.read_excel")
-def test_excel_file_reader_empty(mock_read_excel) -> None:
+def test_excel_file_reader_empty(mock_read_excel: MagicMock) -> None:
     """Тест проверяет корректный возврат пустого списка, если файл excel пустой"""
 
     mock_data = pd.DataFrame()
@@ -32,7 +32,7 @@ def test_excel_file_reader_empty(mock_read_excel) -> None:
 
 
 @patch("pandas.read_excel", side_effect=FileNotFoundError)
-def test_excel_file_reader_not_found_error(mock_read_excel) -> None:
+def test_excel_file_reader_not_found_error(mock_read_excel: MagicMock) -> None:
     """Тест проверяет корректный возврат пустого списка, если excel файл не найден"""
 
     result = get_excel_file("file_not_in_project")

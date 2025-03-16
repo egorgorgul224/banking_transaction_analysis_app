@@ -2,13 +2,13 @@ import calendar
 import json
 from datetime import datetime
 
-from file_reader import get_excel_file
+from src.file_reader import get_excel_file
 
 
 def get_categories_cashback_service(year: str, month: str) -> str:
     """Функция принимает на вход месяц и год. Возвращает категории и кэшбек по ним за выбранный месяц и год."""
 
-    categories_cashback = {}
+    categories_cashback: dict = {}
     start = f"01-{month}-{year} 00:00:00"
     finish = f"{str(calendar.monthrange(int(year), int(month))[-1])}-{month}-{year} 23:59:59"
 

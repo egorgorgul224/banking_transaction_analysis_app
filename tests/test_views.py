@@ -1,4 +1,3 @@
-import json
 from unittest.mock import MagicMock, patch
 
 from src.views import get_info_page_main
@@ -28,7 +27,7 @@ def test_get_info_page_main(
     mock_get_currency_rates: MagicMock,
     mock_get_stock_prices: MagicMock,
 ) -> None:
-    """"""
+    """Тест проверяет корректный вывод итоговой информации из вызываемых функций модуля utils.py в модуле views.py"""
 
     mock_input.side_effect = ["2020-03-03 15:00:00"]
 
@@ -90,8 +89,7 @@ def test_get_info_page_main(
             {"stock": "TSLA", "price": 249.98},
         ],
     }
-    expected = json.dumps(expected_result, ensure_ascii=False)
-    assert result == expected
+    assert result == expected_result
 
     # mock_get_greeting.assert_called_once_with()
     # mock_get_excel_file.assert_called_once_with()

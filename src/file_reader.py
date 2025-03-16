@@ -4,9 +4,10 @@ from pathlib import Path
 import pandas as pd
 
 BASEDIR = Path(__file__).resolve().parent.parent
+logg_path = Path(BASEDIR / "logs")
 
 logger = logging.getLogger("file_reader")
-file_handler = logging.FileHandler("logs/file_reader.log", mode="w", encoding="utf-8")
+file_handler = logging.FileHandler(f"{logg_path}/file_reader.log", mode="w", encoding="utf-8")
 file_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s: %(message)s")
 file_handler.setFormatter(file_formatter)
 logger.addHandler(file_handler)
