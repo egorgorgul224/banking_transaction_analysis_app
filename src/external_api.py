@@ -125,18 +125,15 @@ def get_stock_prices() -> list[dict]:
                 stock_info["price"] = result["c"]
                 stock_result.append(stock_info)
 
-
             except requests.exceptions.Timeout:
                 error_message = "Время запроса истекло"
                 logger.error(error_message)
                 raise Exception(error_message)
 
-
             except requests.exceptions.ConnectionError:
                 error_message = "Ошибка подключения. Проверьте интернет-соединение"
                 logger.error(error_message)
                 raise Exception(error_message)
-
 
             except requests.exceptions.RequestException as req_error:
                 error_message = f"Произошла ошибка. {req_error}"

@@ -4,8 +4,15 @@ from typing import Union
 
 from src.external_api import get_currency_rates, get_stock_prices
 from src.file_reader import get_excel_file
-from src.utils import (get_cards_info, get_cards_number, get_cards_spent_cashback, get_date_period, get_greeting,
-                       get_period_transactions, get_top_amount_transactions)
+from src.utils import (
+    get_cards_info,
+    get_cards_number,
+    get_cards_spent_cashback,
+    get_date_period,
+    get_greeting,
+    get_period_transactions,
+    get_top_amount_transactions,
+)
 
 logger = logging.getLogger("views")
 file_handler = logging.FileHandler("logs/views.log", mode="w", encoding="utf-8")

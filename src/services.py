@@ -36,9 +36,13 @@ def get_categories_cashback_service(year: str, month: str) -> str:
         current_time = datetime.strptime(str(transaction.get("Дата операции")), "%d.%m.%Y %H:%M:%S")
         if start_date <= current_time <= finish_date and transaction.get("Сумма платежа", 0) < 0:
             if transaction["Категория"] in categories_cashback:
-                categories_cashback[transaction.get("Категория", "Нет категории")] += transaction.get("Сумма операции", 0)
+                categories_cashback[transaction.get("Категория", "Нет категории")] += transaction.get(
+                    "Сумма операции", 0
+                )
             else:
-                categories_cashback[transaction.get("Категория", "Нет категории")] = transaction.get("Сумма операции", 0)
+                categories_cashback[transaction.get("Категория", "Нет категории")] = transaction.get(
+                    "Сумма операции", 0
+                )
 
     logger.info("Проходим по словарю и пересоздаем словарь 'категория: кэшбек' по тратам за выбранный период")
     for category, expenses in categories_cashback.items():

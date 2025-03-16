@@ -86,7 +86,9 @@ def test_get_currency_rates_empty(mocked_get_user_currencies: MagicMock) -> None
 
 @patch("src.external_api.get_user_currencies")
 @patch("requests.request")
-def test_get_currency_rates_status_code_error(mocked_request: MagicMock, mocked_get_user_currencies: MagicMock) -> None:
+def test_get_currency_rates_status_code_error(
+    mocked_request: MagicMock, mocked_get_user_currencies: MagicMock
+) -> None:
     """Тест проверяет корректный вывод ошибки, если status code не равен 200"""
 
     mocked_get_user_currencies.return_value = {"user_currencies": ["USD"], "user_stocks": ["AAPL"]}
@@ -130,7 +132,6 @@ def test_get_currency_rates_connection_error(mocked_request: MagicMock, mocked_g
     assert "Ошибка подключения. Проверьте интернет-соединение" in str(exc_message)
     mocked_get_user_currencies.assert_called_once_with()
     mocked_request.assert_called()
-
 
 
 @patch("src.external_api.get_user_currencies")
@@ -219,7 +220,6 @@ def test_get_stock_prices_connection_error(mocked_request: MagicMock, mocked_get
     assert "Ошибка подключения. Проверьте интернет-соединение" in str(exc_message)
     mocked_get_user_currencies.assert_called_once_with()
     mocked_request.assert_called()
-
 
 
 @patch("src.external_api.get_user_currencies")
