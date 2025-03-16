@@ -55,27 +55,22 @@ def test_get_user_currencies_file_not_found_error(mock_json_load, mock_open) -> 
     mock_json_load.assert_called_once()
 
 
-# @patch("src.external_api.get_user_currencies")
-# @patch("requests.request")
-# def test_get_currency_rates(mocked_get_user_currencies, mocked_get) -> None:
-#     """Тест проверяет корректный вывод списка словарей с названием курса и ставкой в рублях"""
-#
-#     mocked_get_user_currencies.return_value = ["USD"]
-#     load_dotenv()
-#     apilayer_key = os.getenv("APILAYER_KEY")
-#     mocked_get.return_value.json.return_value = {
-#         "base": "USD",
-#         "date": "2025-03-15",
-#         "rates": {"RUB": 85.37},
-#         "success": True,
-#         "timestamp": 1742048104,
-#     }
-#     result = get_currency_rates()
-#     assert result ==  [{'currency': 'USD', 'rate': 85.37}]
-#     mocked_get_user_currencies.assert_called_once_with(f"fake_path.json", "r", encoding="utf_8")
-#     mocked_get.assert_called(
-#         "GET",
-#         f"https://api.apilayer.com/exchangerates_data/latest?symbols=RUB&base=USD",
-#         headers={"apikey": f"{apilayer_key}"},
-#         data={},
-#     )
+@patch("src.external_api.get_user_currencies")
+@patch("requests.request")
+def test_get_currency_rates(mocked_get, mocked_get_user_currencies) -> None:
+    """Тест проверяет корректный вывод списка словарей с названием курса и ставкой в рублях"""
+
+    mocked_get_user_currencies.return_value = {"user_currencies": ["USD"],
+                                               "user_stocks": ["AAPL"]
+                                               }
+    mocked_get.return_value.json.return_value = {
+        "base": "USD",
+        "date": "2025-03-15",
+        "rates": {"RUB": 85.37},
+        "success": True,
+        "timestamp": 1742048104,
+    }
+    result = get_currency_rates()
+    assert result ==  [{"currency": "USD", "rate": 85.37}]
+    mocked_get_user_currencies.assert_called_once_with()
+    mocked_get.assert_called()
