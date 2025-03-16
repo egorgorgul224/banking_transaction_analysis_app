@@ -58,7 +58,13 @@ def get_currency_rates() -> list[dict]:
             url = f"https://api.apilayer.com/exchangerates_data/latest?symbols=RUB&base={currency}"
 
             try:
-                response = requests.request("GET", url, headers=headers, data=payload)
+                response = requests.request("GET", url, headers=headers, data=payload, timeout=5)
+
+                if response.status_code != 200:
+                    error_message = f"Ошибка статус-кода: {response.status_code}"
+                    logger.error(error_message)
+                    raise Exception(error_message)
+
                 result = response.json()
 
                 currency_info["currency"] = currency
@@ -66,13 +72,20 @@ def get_currency_rates() -> list[dict]:
                 currency_result.append(currency_info)
 
             except requests.exceptions.Timeout:
-                logger.error("Время запроса истекло")
+                error_message = "Время запроса истекло"
+                logger.error(error_message)
+                raise Exception(error_message)
+
             except requests.exceptions.ConnectionError:
-                logger.error("Ошибка подключения. Проверьте интернет-соединение")
-            except requests.exceptions.HTTPError as http_error:
-                logger.error(f"HTTP ошибка. {http_error.response.status_code}")
+                error_message = "Ошибка подключения. Проверьте интернет-соединение"
+                logger.error(error_message)
+                raise Exception(error_message)
+
             except requests.exceptions.RequestException as req_error:
-                logger.error(f"Произошла ошибка. {req_error}")
+                error_message = f"Произошла ошибка. {req_error}"
+                exc_message = "Произошла ошибка"
+                logger.error(error_message)
+                raise Exception(exc_message)
 
         logger.info("Данные успешно получены")
         return currency_result
@@ -100,20 +113,36 @@ def get_stock_prices() -> list[dict]:
 
             try:
                 response = requests.get(url, timeout=5)
+
+                if response.status_code != 200:
+                    error_message = f"Ошибка статус-кода: {response.status_code}"
+                    logger.error(error_message)
+                    raise Exception(error_message)
+
                 result = response.json()
 
                 stock_info["stock"] = stock
                 stock_info["price"] = result["c"]
                 stock_result.append(stock_info)
 
+
             except requests.exceptions.Timeout:
-                logger.error("Время запроса истекло")
+                error_message = "Время запроса истекло"
+                logger.error(error_message)
+                raise Exception(error_message)
+
+
             except requests.exceptions.ConnectionError:
-                logger.error("Ошибка подключения. Проверьте интернет-соединение")
-            except requests.exceptions.HTTPError as error:
-                logger.error(f"HTTP ошибка. {error.response.status_code}")
+                error_message = "Ошибка подключения. Проверьте интернет-соединение"
+                logger.error(error_message)
+                raise Exception(error_message)
+
+
             except requests.exceptions.RequestException as req_error:
-                logger.error(f"Произошла ошибка. {req_error}")
+                error_message = f"Произошла ошибка. {req_error}"
+                exc_message = "Произошла ошибка"
+                logger.error(error_message)
+                raise Exception(exc_message)
 
         logger.info("Данные успешно получены")
         return stock_result
