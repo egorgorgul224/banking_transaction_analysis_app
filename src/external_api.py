@@ -57,13 +57,15 @@ def get_currency_rates() -> list[dict]:
             url = f"https://api.apilayer.com/exchangerates_data/latest?symbols=RUB&base={currency}"
 
             try:
-                response = requests.request("GET", url, headers=headers, data=payload)
+                response = requests.request("GET", url, headers=headers, data=payload, timeout=5)
                 result = response.json()
 
                 currency_info["currency"] = currency
                 currency_info["rate"] = round(result["rates"]["RUB"], 2)
                 currency_result.append(currency_info)
 
+            except requests.exceptions.Timeout:
+                logger.error("Время запроса истекло")
             except requests.exceptions.ConnectionError:
                 logger.error("Ошибка подключения. Проверьте интернет-соединение")
             except requests.exceptions.HTTPError:
@@ -96,13 +98,15 @@ def get_stock_prices() -> list[dict]:
             url = f"https://finnhub.io/api/v1/quote?symbol={stock}&token={alphavantage_key}"
 
             try:
-                response = requests.get(url)
+                response = requests.get(url, timeout=5)
                 result = response.json()
 
                 stock_info["stock"] = stock
                 stock_info["price"] = result["c"]
                 stock_result.append(stock_info)
 
+            except requests.exceptions.Timeout:
+                logger.error("Время запроса истекло")
             except requests.exceptions.ConnectionError:
                 logger.error("Ошибка подключения. Проверьте интернет-соединение")
             except requests.exceptions.HTTPError:
