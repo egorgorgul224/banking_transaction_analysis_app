@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from unittest.mock import MagicMock, mock_open, patch
 
-from src.external_api import get_currency_rates, get_user_currencies, get_stock_prices
+from src.external_api import get_currency_rates, get_stock_prices, get_user_currencies
 
 BASEDIR = Path(__file__).resolve().parent.parent
 
@@ -70,16 +70,34 @@ def test_get_currency_rates(mocked_get: MagicMock, mocked_get_user_currencies: M
     mocked_get.assert_called()
 
 
-@patch("src.external_api.get_stock_prices")
+@patch("src.external_api.get_user_currencies")
+def test_get_currency_rates_empty(mocked_get_user_currencies: MagicMock) -> None:
+    """Тест проверяет корректный пустого списка, если не были переданы курсы валют"""
+
+    mocked_get_user_currencies.return_value = {}
+    result = get_currency_rates()
+    assert result == []
+    mocked_get_user_currencies.assert_called_once_with()
+
+
+@patch("src.external_api.get_user_currencies")
 @patch("requests.get")
 def test_get_stock_prices(mocked_get: MagicMock, mocked_get_user_currencies: MagicMock) -> None:
     """Тест проверяет корректный вывод списка словарей с названием курса и ставкой в рублях"""
 
     mocked_get_user_currencies.return_value = {"user_currencies": ["USD"], "user_stocks": ["AAPL"]}
-    mocked_get.return_value.json.return_value = [{
-        {'stock': 'AAPL', 'price': 213.49}
-    }]
+    mocked_get.return_value.json.return_value = {"c": 213.49}
     result = get_stock_prices()
     assert result == [{"stock": "AAPL", "price": 213.49}]
     mocked_get_user_currencies.assert_called_once_with()
     mocked_get.assert_called()
+
+
+@patch("src.external_api.get_user_currencies")
+def test_get_stock_prices_empty(mocked_get_user_currencies: MagicMock) -> None:
+    """Тест проверяет корректный вывод списка словарей с названием курса и ставкой в рублях"""
+
+    mocked_get_user_currencies.return_value = {}
+    result = get_stock_prices()
+    assert result == []
+    mocked_get_user_currencies.assert_called_once_with()

@@ -69,10 +69,10 @@ def get_currency_rates() -> list[dict]:
                 logger.error("Время запроса истекло")
             except requests.exceptions.ConnectionError:
                 logger.error("Ошибка подключения. Проверьте интернет-соединение")
-            except requests.exceptions.HTTPError:
-                logger.error("HTTP ошибка. Проверьте URL-адрес.")
-            except requests.exceptions.RequestException:
-                logger.error("Произошла ошибка.")
+            except requests.exceptions.HTTPError as http_error:
+                logger.error(f"HTTP ошибка. {http_error.response.status_code}")
+            except requests.exceptions.RequestException as req_error:
+                logger.error(f"Произошла ошибка. {req_error}")
 
         logger.info("Данные успешно получены")
         return currency_result
@@ -110,10 +110,10 @@ def get_stock_prices() -> list[dict]:
                 logger.error("Время запроса истекло")
             except requests.exceptions.ConnectionError:
                 logger.error("Ошибка подключения. Проверьте интернет-соединение")
-            except requests.exceptions.HTTPError:
-                logger.error("HTTP ошибка. Проверьте URL-адрес.")
-            except requests.exceptions.RequestException:
-                logger.error("Произошла ошибка.")
+            except requests.exceptions.HTTPError as error:
+                logger.error(f"HTTP ошибка. {error.response.status_code}")
+            except requests.exceptions.RequestException as req_error:
+                logger.error(f"Произошла ошибка. {req_error}")
 
         logger.info("Данные успешно получены")
         return stock_result
