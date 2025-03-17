@@ -30,3 +30,7 @@ def main() -> None:
     print(f"Сервис 'Выгодные категории кешбэка' за {date_object.month} месяц {date_object.year} года")
     json_service_result = get_categories_cashback_service(str(date_object.year), str(date_object.month))
     print(json_service_result)
+
+
+if __name__ == '__main__':
+    print(main())
