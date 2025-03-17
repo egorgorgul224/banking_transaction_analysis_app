@@ -6,6 +6,7 @@ from typing import Optional
 
 import pandas as pd
 
+from src.decorators import write_to_json_file
 from src.file_reader import get_data_from_df
 from src.utils import get_period_transactions
 
@@ -20,6 +21,7 @@ logger.addHandler(file_handler)
 logger.setLevel(logging.DEBUG)
 
 
+@write_to_json_file
 def spending_by_category(transactions: pd.DataFrame, category: str, date: Optional[str] = None) -> str:
     """Функция принимает на вход DataFrame транзакций, категорию для поиска и дату. Возвращает json-ответ с
     транзакциями в выбранной категории за последние 3 месяца от выбранной даты(если дата текущая, то последние 3
