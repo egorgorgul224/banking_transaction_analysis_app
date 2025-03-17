@@ -107,7 +107,11 @@ def get_cards_spent_cashback(transactions_info: list[dict], cards_number: list) 
     for card in cards_number:
         expense_count = 0
         for transaction in transactions_info:
-            if transaction.get("Номер карты", "Нет номера карты") == card and transaction.get("Сумма платежа", 0) < 0:
+            if (
+                transaction.get("Номер карты", "Нет номера карты") == card
+                and transaction.get("Сумма платежа", 0) < 0
+                and transaction.get("Статус", "") == "OK"
+            ):
                 expense_count += transaction.get("Сумма платежа", 0)
         total_spent.append(round(-expense_count, 2))
         cashback_sum = expense_count * 0.01
@@ -141,7 +145,8 @@ def get_top_amount_transactions(transactions_info: list[dict]) -> list[dict]:
     top_transactions = []
 
     logger.info("Сортируем список транзакций по сумме транзакции по убыванию")
-    sorted_transactions = sorted(transactions_info, key=lambda amount: (amount.get("Сумма операции", 0)))
+    transactions_status_ok = [transaction for transaction in transactions_info if transaction.get("Статус", "")=="OK" and transaction.get("Номер карты") != "Нет номера карты"]
+    sorted_transactions = sorted(transactions_status_ok, key=lambda amount: (amount.get("Сумма операции", 0)))
 
     logger.info("Успешная сортировка транзакций. Выводим топ 5 транзакций по сумме")
     for t in sorted_transactions[:5]:

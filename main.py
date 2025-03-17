@@ -1,6 +1,8 @@
 import json
 from datetime import datetime
 
+from src.file_reader import get_excel_df
+from src.reports import spending_by_category
 from src.services import get_categories_cashback_service
 from src.views import get_info_page_main
 
@@ -30,6 +32,10 @@ def main() -> None:
     print(f"Сервис 'Выгодные категории кешбэка' за {date_object.month} месяц {date_object.year} года")
     json_service_result = get_categories_cashback_service(str(date_object.year), str(date_object.month))
     print(json_service_result)
+
+    # print(f"Отчет 'Траты по категории' за последние 3 месяца от выбранной даты")
+    # json_report_spending_by_category = spending_by_category(get_excel_df(), "Фастфуд", user_input_date)
+    # print(json_report_spending_by_category)
 
 
 if __name__ == '__main__':
