@@ -28,7 +28,7 @@ def get_excel_df(path_file: str = "operations") -> pd.DataFrame:
         except KeyError as error:
             logger.error(f"KeyError: не найден столбец {error}")
     except FileNotFoundError:
-        error_message = f"Файл не найден"
+        error_message = "Файл не найден"
         logger.error(error_message)
         raise Exception(error_message)
 
@@ -40,9 +40,9 @@ def get_data_from_df(df_file: pd.DataFrame) -> list[dict]:
     """Функция принимает на вход табличный формат DataFrame и возвращает список словарей транзакций."""
 
     if not df_file.empty:
-        logger.info(f"Преобразуем DataFrame данные в список словарей")
+        logger.info("Преобразуем DataFrame данные в список словарей")
         operations_data = df_file.to_dict(orient="records")
-        logger.info(f"Успешное преобразование")
+        logger.info("Успешное преобразование")
         return operations_data
     else:
         return []

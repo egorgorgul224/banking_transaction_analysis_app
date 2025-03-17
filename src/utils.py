@@ -145,7 +145,11 @@ def get_top_amount_transactions(transactions_info: list[dict]) -> list[dict]:
     top_transactions = []
 
     logger.info("Сортируем список транзакций по сумме транзакции по убыванию")
-    transactions_status_ok = [transaction for transaction in transactions_info if transaction.get("Статус", "")=="OK" and transaction.get("Номер карты") != "Нет номера карты"]
+    transactions_status_ok = [
+        transaction
+        for transaction in transactions_info
+        if transaction.get("Статус", "") == "OK" and transaction.get("Номер карты") != "Нет номера карты"
+    ]
     sorted_transactions = sorted(transactions_status_ok, key=lambda amount: (amount.get("Сумма операции", 0)))
 
     logger.info("Успешная сортировка транзакций. Выводим топ 5 транзакций по сумме")
