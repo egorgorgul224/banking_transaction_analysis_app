@@ -1,21 +1,19 @@
 import logging
 from datetime import datetime
+from pathlib import Path
 from typing import Union
 
 from src.external_api import get_currency_rates, get_stock_prices
 from src.file_reader import get_excel_file
-from src.utils import (
-    get_cards_info,
-    get_cards_number,
-    get_cards_spent_cashback,
-    get_date_period,
-    get_greeting,
-    get_period_transactions,
-    get_top_amount_transactions,
-)
+from src.utils import (get_cards_info, get_cards_number, get_cards_spent_cashback, get_date_period, get_greeting,
+                       get_period_transactions, get_top_amount_transactions)
+
+BASEDIR = Path(__file__).resolve().parent.parent
+logg_path = Path(BASEDIR / "logs")
+
 
 logger = logging.getLogger("views")
-file_handler = logging.FileHandler("logs/views.log", mode="w", encoding="utf-8")
+file_handler = logging.FileHandler(f"{logg_path}/views.log", mode="w", encoding="utf-8")
 file_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s: %(message)s")
 file_handler.setFormatter(file_formatter)
 logger.addHandler(file_handler)

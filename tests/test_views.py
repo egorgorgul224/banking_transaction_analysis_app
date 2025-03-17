@@ -13,9 +13,7 @@ from src.views import get_info_page_main
 @patch("src.views.get_date_period")
 @patch("src.views.get_excel_file")
 @patch("src.views.get_greeting")
-@patch("builtins.input")
 def test_get_info_page_main(
-    mock_input: MagicMock,
     mock_get_greeting: MagicMock,
     mock_get_excel_file: MagicMock,
     mock_get_date_period: MagicMock,
@@ -28,8 +26,6 @@ def test_get_info_page_main(
     mock_get_stock_prices: MagicMock,
 ) -> None:
     """Тест проверяет корректный вывод итоговой информации из вызываемых функций модуля utils.py в модуле views.py"""
-
-    mock_input.side_effect = ["2020-03-03 15:00:00"]
 
     mock_get_greeting.return_value = "Доброе утро"
     mock_get_excel_file.return_value = [
@@ -44,7 +40,7 @@ def test_get_info_page_main(
             "Описание": "Тест операция 1",
         }
     ]
-    mock_get_date_period.return_value = "01.03.2020 00:00:00", "03.03.2020 15:00:00"
+    mock_get_date_period.return_value = ("01.03.2020 00:00:00", "03.03.2020 15:00:00")
     mock_get_period_transactions.return_value = [
         {
             "Дата операции": "03.03.2020 14:55:21",
@@ -91,19 +87,12 @@ def test_get_info_page_main(
     }
     assert result == expected_result
 
-    # mock_get_greeting.assert_called_once_with()
-    # mock_get_excel_file.assert_called_once_with()
-    # mock_get_date_period.assert_called_once_with("2020-03-03 15:00:00")
-    # mock_get_period_transactions.assert_called_once_with(
-    #     mock_get_excel_file.return_value, mock_get_date_period.return_value
-    # )
-    # mock_get_cards_number.assert_called_once_with(mock_get_period_transactions.return_value)
-    # mock_get_cards_spent_cashback.assert_called_once_with(
-    #     mock_get_period_transactions.return_value, mock_get_cards_number.return_value
-    # )
-    # mock_get_cards_info.assert_called_once_with(
-    #     mock_get_cards_number.return_value, mock_get_cards_spent_cashback.return_value
-    # )
-    # mock_get_top_amount_transactions.assert_called_once_with(mock_get_period_transactions.return_value)
-    # mock_get_currency_rates.assert_called()
-    # mock_get_stock_prices.assert_called()
+    mock_get_greeting.assert_called_once()
+    mock_get_excel_file.assert_called_once()
+    mock_get_date_period.assert_called_once()
+    mock_get_period_transactions.assert_called_once()
+    mock_get_cards_number.assert_called_once()
+    mock_get_cards_info.assert_called_once()
+    mock_get_top_amount_transactions.assert_called_once()
+    mock_get_currency_rates.assert_called()
+    mock_get_stock_prices.assert_called()
