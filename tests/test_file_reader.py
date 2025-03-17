@@ -34,7 +34,7 @@ def test_get_excel_df_not_found_error(mock_read_excel: MagicMock) -> None:
     with pytest.raises(Exception) as exc_message:
         get_excel_df("file_not_in_project")
 
-    assert f"Файл не найден" in str(exc_message)
+    assert "Файл не найден" in str(exc_message)
 
 
 @pytest.mark.parametrize(
