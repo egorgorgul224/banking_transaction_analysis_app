@@ -1,11 +1,10 @@
 from typing import Any
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 import pandas as pd
 import pytest
 
 from src.reports import spending_by_category
-
 
 # @pytest.mark.parametrize(
 #     "category, date",
@@ -46,8 +45,8 @@ from src.reports import spending_by_category
 #             "Категория": "Фастфуд",
 #         }
 #     ]
-
-# mocked_get_period_transactions.assert_called_once()
+#
+#     mocked_get_period_transactions.assert_called_once()
 
 
 # @pytest.mark.parametrize(

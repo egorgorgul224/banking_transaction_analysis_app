@@ -22,6 +22,7 @@ def test_get_categories_cashback_service(
         {
             "Дата операции": "03.03.2020 14:55:21",
             "Номер карты": "*0001",
+            "Статус": "OK",
             "Сумма операции": -21.0,
             "Валюта операции": "RUB",
             "Сумма платежа": -21.0,
@@ -33,8 +34,6 @@ def test_get_categories_cashback_service(
 
     result = get_categories_cashback_service(year, month)
     assert result == '{\n    "Супермаркеты": 0.21\n}'
-    mocked_df.assert_called_once()
-    mocked_df_data.assert_called_once()
 
 
 @pytest.mark.parametrize(

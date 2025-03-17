@@ -1,4 +1,7 @@
+from pathlib import Path
 from typing import Any, Callable, Union
+
+BASEDIR = Path(__file__).resolve().parent.parent
 
 
 def write_to_json_file(func: Callable[..., Any]) -> Callable[..., Any]:
@@ -7,7 +10,7 @@ def write_to_json_file(func: Callable[..., Any]) -> Callable[..., Any]:
     def wrapper(*args: Any) -> Any:
         result = func(*args)
 
-        with open(f"{func.__name__}.json", "w", encoding="utf-8") as file:
+        with open(f"{Path(BASEDIR) / func.__name__}.json", "w", encoding="utf-8") as file:
             file.write(result)
 
     return wrapper
