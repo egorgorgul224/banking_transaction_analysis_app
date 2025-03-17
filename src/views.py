@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Union
 
 from src.external_api import get_currency_rates, get_stock_prices
-from src.file_reader import get_excel_file
+from src.file_reader import get_data_from_df, get_excel_df
 from src.utils import (get_cards_info, get_cards_number, get_cards_spent_cashback, get_date_period, get_greeting,
                        get_period_transactions, get_top_amount_transactions)
 
@@ -23,12 +23,13 @@ logger.setLevel(logging.DEBUG)
 def get_info_page_main(user_date: Union[str, datetime] = datetime.now()) -> dict:
     """Функция возвращает список, состоящий из приветствия, данных о сумме расходов и кэшбека по каждой карте в период
     с начала месяца по дату пользователя(месяц берется из даты пользователя), топ 5 транзакций по сумме платежа,
-    курсу валют, стоимости акций"""
+    курсу валют, стоимости акций."""
 
     result_info: dict = {}
     user_greeting = get_greeting()
     logger.info("Успешное выполнение функции get_greeting. Приветствие получено")
-    transactions_data = get_excel_file()
+    transactions_df = get_excel_df()
+    transactions_data = get_data_from_df(transactions_df)
     logger.info("Успешное выполнение функции get_excel_file. Получены данные по транзакциям")
     start, finish = get_date_period(user_date)
     logger.info("Успешное выполнение функции get_date_period. Получены начальная и конечная дата для фильтра")

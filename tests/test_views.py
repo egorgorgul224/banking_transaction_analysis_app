@@ -11,11 +11,13 @@ from src.views import get_info_page_main
 @patch("src.views.get_cards_number")
 @patch("src.views.get_period_transactions")
 @patch("src.views.get_date_period")
-@patch("src.views.get_excel_file")
+@patch("src.views.get_data_from_df")
+@patch("src.views.get_excel_df")
 @patch("src.views.get_greeting")
 def test_get_info_page_main(
     mock_get_greeting: MagicMock,
-    mock_get_excel_file: MagicMock,
+    mock_get_excel_df: MagicMock,
+    mock_get_data_from_df: MagicMock,
     mock_get_date_period: MagicMock,
     mock_get_period_transactions: MagicMock,
     mock_get_cards_number: MagicMock,
@@ -28,7 +30,8 @@ def test_get_info_page_main(
     """Тест проверяет корректный вывод итоговой информации из вызываемых функций модуля utils.py в модуле views.py"""
 
     mock_get_greeting.return_value = "Доброе утро"
-    mock_get_excel_file.return_value = [
+    mock_get_excel_df.return_value = {}
+    mock_get_data_from_df.return_value = [
         {
             "Дата операции": "03.03.2020 14:55:21",
             "Номер карты": "*0001",
@@ -88,7 +91,8 @@ def test_get_info_page_main(
     assert result == expected_result
 
     mock_get_greeting.assert_called_once()
-    mock_get_excel_file.assert_called_once()
+    mock_get_excel_df.assert_called_once()
+    mock_get_data_from_df.assert_called_once()
     mock_get_date_period.assert_called_once()
     mock_get_period_transactions.assert_called_once()
     mock_get_cards_number.assert_called_once()

@@ -4,7 +4,7 @@ import logging
 from datetime import datetime
 from pathlib import Path
 
-from src.file_reader import get_excel_file
+from src.file_reader import get_data_from_df, get_excel_df
 
 BASEDIR = Path(__file__).resolve().parent.parent
 logg_path = Path(BASEDIR / "logs")
@@ -29,7 +29,8 @@ def get_categories_cashback_service(year: str, month: str) -> str:
     logger.info(f"Успешно приняты и созданы даты периода для сортировки: {start_date}, {finish_date}")
 
     logger.info("Получаем список словарей с транзакциями из excel-файла")
-    transactions_data = get_excel_file()
+    transactions_df = get_excel_df()
+    transactions_data = get_data_from_df(transactions_df)
 
     logger.info("Проходим по транзакциям и создаем словарь 'категория: траты' за выбранный период")
     for transaction in transactions_data:

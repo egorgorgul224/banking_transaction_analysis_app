@@ -14,23 +14,35 @@ logger.addHandler(file_handler)
 logger.setLevel(logging.DEBUG)
 
 
-def get_excel_file(path_file: str = "operations") -> list[dict]:
-    """Функция принимает на вход название excel файла и возвращает список словарей с транзакциями"""
+def get_excel_df(path_file: str = "operations") -> pd.DataFrame:
+    """Функция принимает на вход название excel файла и возвращает табличный формат DataFrame с транзакциями."""
 
     logger.info(f"Задаем путь до файла {path_file}")
     path_object = Path(f"{BASEDIR}/data/{path_file}.xlsx")
     try:
         logger.info(f"Читаем файл {path_file}")
         excel_data = pd.read_excel(path_object)
+        logger.info(f"Файл {path_file} найден. Преобразуем файл в табличный формат DataFrame")
         try:
             excel_data["Номер карты"] = excel_data["Номер карты"].fillna("Нет номера карты")
         except KeyError as error:
             logger.error(f"KeyError: не найден столбец {error}")
-        logger.info(f"Файл {path_file} найден и прочитан успешно")
-        operations_data = excel_data.to_dict(orient="records")
     except FileNotFoundError:
-        logger.error(f"Файл {path_file} не найден")
-        return []
+        error_message = f"Файл не найден"
+        logger.error(error_message)
+        raise Exception(error_message)
 
-    logger.info(f"Файл {path_file} успешно преобразован")
-    return operations_data
+    logger.info(f"Файл {path_file} успешно преобразован в табличный формат DataFrame")
+    return excel_data
+
+
+def get_data_from_df(df_file: pd.DataFrame) -> list[dict]:
+    """Функция принимает на вход табличный формат DataFrame и возвращает список словарей транзакций."""
+
+    if not df_file.empty:
+        logger.info(f"Преобразуем DataFrame данные в список словарей")
+        operations_data = df_file.to_dict(orient="records")
+        logger.info(f"Успешное преобразование")
+        return operations_data
+    else:
+        return []

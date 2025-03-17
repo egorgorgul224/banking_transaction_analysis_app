@@ -11,10 +11,14 @@ from src.services import get_categories_cashback_service
         ("2020", "03"),
     ],
 )
-@patch("src.services.get_excel_file")
-def test_get_categories_cashback_service(mocked_get_user_currencies: MagicMock, year: str, month: str) -> None:
+@patch("src.services.get_data_from_df")
+@patch("src.services.get_excel_df")
+def test_get_categories_cashback_service(
+    mocked_df: MagicMock, mocked_df_data: MagicMock, year: str, month: str
+) -> None:
     """Тест проверяет корректный вывод списка категорий и кэшбека за выбранный месяц и год."""
-    mocked_get_user_currencies.return_value = [
+    mocked_df.return_value = {}
+    mocked_df_data.return_value = [
         {
             "Дата операции": "03.03.2020 14:55:21",
             "Номер карты": "*0001",
@@ -29,7 +33,8 @@ def test_get_categories_cashback_service(mocked_get_user_currencies: MagicMock, 
 
     result = get_categories_cashback_service(year, month)
     assert result == '{\n    "Супермаркеты": 0.21\n}'
-    mocked_get_user_currencies.assert_called_once_with()
+    mocked_df.assert_called_once()
+    mocked_df_data.assert_called_once()
 
 
 @pytest.mark.parametrize(
@@ -38,10 +43,14 @@ def test_get_categories_cashback_service(mocked_get_user_currencies: MagicMock, 
         ("2025", "03"),
     ],
 )
-@patch("src.services.get_excel_file")
-def test_get_categories_cashback_service_empty(mocked_get_user_currencies: MagicMock, year: str, month: str) -> None:
+@patch("src.services.get_data_from_df")
+@patch("src.services.get_excel_df")
+def test_get_categories_cashback_service_empty(
+    mocked_df: MagicMock, mocked_df_data: MagicMock, year: str, month: str
+) -> None:
     """Тест проверяет корректный вывод пустого списка, если за выбранный месяц и год не было транзакций."""
-    mocked_get_user_currencies.return_value = [
+    mocked_df.return_value = {}
+    mocked_df_data.return_value = [
         {
             "Дата операции": "03.03.2020 14:55:21",
             "Номер карты": "*0001",
@@ -56,4 +65,5 @@ def test_get_categories_cashback_service_empty(mocked_get_user_currencies: Magic
 
     result = get_categories_cashback_service(year, month)
     assert result == "В выбранном месяце отсутствуют транзакции"
-    mocked_get_user_currencies.assert_called_once_with()
+    mocked_df.assert_called_once()
+    mocked_df_data.assert_called_once()
