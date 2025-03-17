@@ -13,4 +13,6 @@ def write_to_json_file(func: Callable[..., Any]) -> Callable[..., Any]:
         with open(f"{Path(BASEDIR) / func.__name__}.json", "w", encoding="utf-8") as file:
             file.write(result)
 
+        return result
+
     return wrapper
