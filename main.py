@@ -24,6 +24,8 @@ def main() -> None:
         except ValueError:
             print("Вы ввели некорректную дату")
 
+    user_input_category = input("Введите категорию для выгрузки отчета по тратам за 3 месяца:").lower().capitalize()
+
     print("Страница 'Главная': обработка информации...")
     main_info = get_info_page_main(user_input_date)
     json_main_result = json.dumps(main_info, indent=4, ensure_ascii=False)
@@ -34,7 +36,7 @@ def main() -> None:
     print(json_service_result)
 
     print(f"Отчет 'Траты по категории' за последние 3 месяца от выбранной даты")
-    json_report_spending_by_category = spending_by_category(get_excel_df(), "Фастфуд", user_input_date)
+    json_report_spending_by_category = spending_by_category(get_excel_df(), user_input_category, user_input_date)
     print(json_report_spending_by_category)
 
 

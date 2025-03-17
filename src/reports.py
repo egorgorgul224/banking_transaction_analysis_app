@@ -59,4 +59,4 @@ def spending_by_category(transactions: pd.DataFrame, category: str, date: Option
         return json_data
     else:
         logger.info("Данные отсутствуют или выбрана неверная категория")
-        return "По выбранной категории нет транзакций"
+        return f"По выбранной категории нет транзакций за период с {date_from} по {date_to}"
