@@ -91,7 +91,7 @@ def test_get_period_transactions_empty(
 )
 def test_get_cards_number(transaction_period_list: list[dict], expected_result: list) -> None:
     """Тест проверяет корректный вывод непустого списка номеров карт в формате *XXXX, где X - число от 0 до 9, за
-    период с начала месяца по переданную дату(пользовательскую или текущую)"""
+    период с начала месяца по переданную дату(пользовательскую или текущую)."""
     assert get_cards_number(transaction_period_list) == expected_result
 
 

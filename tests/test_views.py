@@ -27,7 +27,7 @@ def test_get_info_page_main(
     mock_get_currency_rates: MagicMock,
     mock_get_stock_prices: MagicMock,
 ) -> None:
-    """Тест проверяет корректный вывод итоговой информации из вызываемых функций модуля utils.py в модуле views.py"""
+    """Тест проверяет корректный вывод итоговой информации из вызываемых функций модуля utils.py в модуле views.py."""
 
     mock_get_greeting.return_value = "Доброе утро"
     mock_get_excel_df.return_value = {}

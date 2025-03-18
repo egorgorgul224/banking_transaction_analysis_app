@@ -21,7 +21,7 @@ def test_get_user_currencies() -> None:
 
 
 def test_get_user_currencies_empty_file() -> None:
-    """Тест проверяет корректный вывод пустого списка, если json-файл пустой"""
+    """Тест проверяет корректный вывод пустого списка, если json-файл пустой."""
     mock_data: dict = {}
     mock_json_data = json.dumps(mock_data)
 
@@ -33,7 +33,7 @@ def test_get_user_currencies_empty_file() -> None:
 @patch("builtins.open", new_callable=mock_open)
 @patch("json.load", side_effect=json.JSONDecodeError("Expecting value", "", 0))
 def test_get_user_currencies_json_error(mock_json_load: MagicMock, mock_open: MagicMock) -> None:
-    """Тест проверяет корректную обработку ошибки JSONDecodeError"""
+    """Тест проверяет корректную обработку ошибки JSONDecodeError."""
 
     result = get_user_currencies("fake_path")
     path_object = Path(BASEDIR / "fake_path")
@@ -45,7 +45,7 @@ def test_get_user_currencies_json_error(mock_json_load: MagicMock, mock_open: Ma
 @patch("builtins.open", new_callable=mock_open)
 @patch("json.load", side_effect=FileNotFoundError("Expecting value", "", 0))
 def test_get_user_currencies_file_not_found_error(mock_json_load: MagicMock, mock_open: MagicMock) -> None:
-    """Тест проверяет корректную обработку ошибки FileNotFoundError, когда файл не найден"""
+    """Тест проверяет корректную обработку ошибки FileNotFoundError, когда файл не найден."""
 
     result = get_user_currencies("fake_path")
     path_object = Path(BASEDIR / "fake_path")
@@ -57,7 +57,7 @@ def test_get_user_currencies_file_not_found_error(mock_json_load: MagicMock, moc
 @patch("src.external_api.get_user_currencies")
 @patch("requests.request")
 def test_get_currency_rates(mocked_get: MagicMock, mocked_get_user_currencies: MagicMock) -> None:
-    """Тест проверяет корректный вывод списка словарей с названием курса и ставкой в рублях"""
+    """Тест проверяет корректный вывод списка словарей с названием курса и ставкой в рублях."""
 
     mocked_get_user_currencies.return_value = {"user_currencies": ["USD"], "user_stocks": ["AAPL"]}
     mocked_get.return_value.status_code = 200
@@ -76,7 +76,7 @@ def test_get_currency_rates(mocked_get: MagicMock, mocked_get_user_currencies: M
 
 @patch("src.external_api.get_user_currencies")
 def test_get_currency_rates_empty(mocked_get_user_currencies: MagicMock) -> None:
-    """Тест проверяет корректный пустого списка, если не были переданы курсы валют"""
+    """Тест проверяет корректный пустого списка, если не были переданы курсы валют."""
 
     mocked_get_user_currencies.return_value = {}
     result = get_currency_rates()
@@ -89,7 +89,7 @@ def test_get_currency_rates_empty(mocked_get_user_currencies: MagicMock) -> None
 def test_get_currency_rates_status_code_error(
     mocked_request: MagicMock, mocked_get_user_currencies: MagicMock
 ) -> None:
-    """Тест проверяет корректный вывод ошибки, если status code не равен 200"""
+    """Тест проверяет корректный вывод ошибки, если status code не равен 200."""
 
     mocked_get_user_currencies.return_value = {"user_currencies": ["USD"], "user_stocks": ["AAPL"]}
     mocked_request.return_value.status_code = 404
@@ -105,7 +105,7 @@ def test_get_currency_rates_status_code_error(
 @patch("src.external_api.get_user_currencies")
 @patch("requests.request")
 def test_get_currency_rates_timeout_error(mocked_request: MagicMock, mocked_get_user_currencies: MagicMock) -> None:
-    """Тест проверяет корректный вывод ошибки timeout"""
+    """Тест проверяет корректный вывод ошибки timeout."""
 
     mocked_get_user_currencies.return_value = {"user_currencies": ["USD"], "user_stocks": ["AAPL"]}
     mocked_request.side_effect = requests.exceptions.Timeout
@@ -121,7 +121,7 @@ def test_get_currency_rates_timeout_error(mocked_request: MagicMock, mocked_get_
 @patch("src.external_api.get_user_currencies")
 @patch("requests.request")
 def test_get_currency_rates_connection_error(mocked_request: MagicMock, mocked_get_user_currencies: MagicMock) -> None:
-    """Тест проверяет корректный вывод ошибки connection"""
+    """Тест проверяет корректный вывод ошибки connection."""
 
     mocked_get_user_currencies.return_value = {"user_currencies": ["USD"], "user_stocks": ["AAPL"]}
     mocked_request.side_effect = requests.exceptions.ConnectionError
@@ -137,7 +137,7 @@ def test_get_currency_rates_connection_error(mocked_request: MagicMock, mocked_g
 @patch("src.external_api.get_user_currencies")
 @patch("requests.request")
 def test_get_currency_rates_req_exc_error(mocked_request: MagicMock, mocked_get_user_currencies: MagicMock) -> None:
-    """Тест проверяет корректный вывод ошибки request exception"""
+    """Тест проверяет корректный вывод ошибки request exception."""
 
     mocked_get_user_currencies.return_value = {"user_currencies": ["USD"], "user_stocks": ["AAPL"]}
     mocked_request.side_effect = requests.exceptions.RequestException
@@ -153,7 +153,7 @@ def test_get_currency_rates_req_exc_error(mocked_request: MagicMock, mocked_get_
 @patch("src.external_api.get_user_currencies")
 @patch("requests.get")
 def test_get_stock_prices(mocked_get: MagicMock, mocked_get_user_currencies: MagicMock) -> None:
-    """Тест проверяет корректный вывод списка словарей с названием курса и ставкой в рублях"""
+    """Тест проверяет корректный вывод списка словарей с названием курса и ставкой в рублях."""
 
     mocked_get_user_currencies.return_value = {"user_currencies": ["USD"], "user_stocks": ["AAPL"]}
     mocked_get.return_value.status_code = 200
@@ -166,7 +166,7 @@ def test_get_stock_prices(mocked_get: MagicMock, mocked_get_user_currencies: Mag
 
 @patch("src.external_api.get_user_currencies")
 def test_get_stock_prices_empty(mocked_get_user_currencies: MagicMock) -> None:
-    """Тест проверяет корректный вывод списка словарей с названием курса и ставкой в рублях"""
+    """Тест проверяет корректный вывод списка словарей с названием курса и ставкой в рублях."""
 
     mocked_get_user_currencies.return_value = {}
     result = get_stock_prices()
@@ -177,7 +177,7 @@ def test_get_stock_prices_empty(mocked_get_user_currencies: MagicMock) -> None:
 @patch("src.external_api.get_user_currencies")
 @patch("requests.get")
 def test_get_stock_prices_status_code_error(mocked_request: MagicMock, mocked_get_user_currencies: MagicMock) -> None:
-    """Тест проверяет корректный вывод ошибки, если status code не равен 200"""
+    """Тест проверяет корректный вывод ошибки, если status code не равен 200."""
 
     mocked_get_user_currencies.return_value = {"user_currencies": ["USD"], "user_stocks": ["AAPL"]}
     mocked_request.return_value.status_code = 404
@@ -193,7 +193,7 @@ def test_get_stock_prices_status_code_error(mocked_request: MagicMock, mocked_ge
 @patch("src.external_api.get_user_currencies")
 @patch("requests.get")
 def test_get_stock_prices_timeout_error(mocked_request: MagicMock, mocked_get_user_currencies: MagicMock) -> None:
-    """Тест проверяет корректный вывод ошибки timeout"""
+    """Тест проверяет корректный вывод ошибки timeout."""
 
     mocked_get_user_currencies.return_value = {"user_currencies": ["USD"], "user_stocks": ["AAPL"]}
     mocked_request.side_effect = requests.exceptions.Timeout
@@ -209,7 +209,7 @@ def test_get_stock_prices_timeout_error(mocked_request: MagicMock, mocked_get_us
 @patch("src.external_api.get_user_currencies")
 @patch("requests.get")
 def test_get_stock_prices_connection_error(mocked_request: MagicMock, mocked_get_user_currencies: MagicMock) -> None:
-    """Тест проверяет корректный вывод ошибки connection"""
+    """Тест проверяет корректный вывод ошибки connection."""
 
     mocked_get_user_currencies.return_value = {"user_currencies": ["USD"], "user_stocks": ["AAPL"]}
     mocked_request.side_effect = requests.exceptions.ConnectionError
@@ -225,7 +225,7 @@ def test_get_stock_prices_connection_error(mocked_request: MagicMock, mocked_get
 @patch("src.external_api.get_user_currencies")
 @patch("requests.get")
 def test_get_stock_prices_req_exc_error(mocked_request: MagicMock, mocked_get_user_currencies: MagicMock) -> None:
-    """Тест проверяет корректный вывод ошибки request exception"""
+    """Тест проверяет корректный вывод ошибки request exception."""
 
     mocked_get_user_currencies.return_value = {"user_currencies": ["USD"], "user_stocks": ["AAPL"]}
     mocked_request.side_effect = requests.exceptions.RequestException

@@ -40,7 +40,7 @@ def get_user_currencies(path_file: str = "user_settings") -> Any:
 
 
 def get_currency_rates() -> list[dict]:
-    """Функция возвращает список словарей с названием курса и ставкой в рублях"""
+    """Функция возвращает список словарей с названием курса и ставкой в рублях."""
 
     user_currency_stocks = get_user_currencies()
     user_currency = user_currency_stocks.get("user_currencies")

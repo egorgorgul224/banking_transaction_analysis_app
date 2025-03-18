@@ -15,7 +15,7 @@ logger.setLevel(logging.DEBUG)
 
 
 def get_greeting() -> str:
-    """Функция возвращает приветствие исходя из времени дня(ночь, утро, день, вечер)"""
+    """Функция возвращает приветствие исходя из времени дня(ночь, утро, день, вечер)."""
 
     logger.info("Получаем текущую дату и время. Возвращаем приветствие в зависимости от времени дня")
     current_time = datetime.now()
@@ -31,7 +31,7 @@ def get_greeting() -> str:
 
 def get_date_period(format_date: Union[str, datetime] = datetime.now()) -> tuple[str, str]:
     """Функция принимает на вход дату и время в формате YYYY-MM-DD HH:MM:SS(по умолчанию текущая дата и время).
-    Возвращает текущую дату и дату начала месяца в формате DD.MM.YYYY HH:MM:SS"""
+    Возвращает текущую дату и дату начала месяца в формате DD.MM.YYYY HH:MM:SS."""
 
     date_format_list = ["%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M:%S.%f"]
 
@@ -123,7 +123,7 @@ def get_cards_spent_cashback(transactions_info: list[dict], cards_number: list) 
 
 def get_cards_info(cards_number: list, total_spent: list, cashback: list) -> list[dict]:
     """Функция принимает на вход списки номером карт в формате *XXXX, где X - число от 0 до 9, список трат по картам
-    и список кэшбеков по картам. Возвращает список словарей с данными по картам(карта, сумма трат, кэшбек)"""
+    и список кэшбеков по картам. Возвращает список словарей с данными по картам(карта, сумма трат, кэшбек)."""
 
     cards_info = []
 
