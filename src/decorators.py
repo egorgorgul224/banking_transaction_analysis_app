@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any, Callable, Union
+from typing import Any, Callable
 
 BASEDIR = Path(__file__).resolve().parent.parent
 

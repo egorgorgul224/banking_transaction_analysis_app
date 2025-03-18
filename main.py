@@ -38,7 +38,7 @@ def main() -> None:
     json_service_result = get_categories_cashback_service(str(date_object.year), str(date_object.month))
     print(json_service_result)
 
-    print(f"Отчет 'Траты по категории' за последние 3 месяца от/до(если не вводили дату) введенной даты")
+    print("Отчет 'Траты по категории' за последние 3 месяца от/до(если не вводили дату) введенной даты")
     json_report_spending_by_category = spending_by_category(get_excel_df(), user_input_category, user_input_date)
     print(json_report_spending_by_category)
 
