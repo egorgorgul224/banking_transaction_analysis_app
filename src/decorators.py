@@ -5,7 +5,7 @@ BASEDIR = Path(__file__).resolve().parent.parent
 
 
 def write_to_json_file(func: Callable[..., Any]) -> Callable[..., Any]:
-    """Декоратор получает функцию и записывает ее в файл. Файл получает название функции."""
+    """Декоратор возвращает результат и записывает его в файл. Файл получает название функции."""
 
     def wrapper(*args: Any) -> Any:
         result = func(*args)
