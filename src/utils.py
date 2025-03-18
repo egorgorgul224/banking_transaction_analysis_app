@@ -82,8 +82,8 @@ def get_period_transactions(transactions_data: list[dict], start: str, finish: s
 
 
 def get_cards_number(transactions_info: list[dict]) -> list:
-    """Функция принимает на вход список с транзакциями, начало периода и конец периода. Возвращает список номеров
-    всех карт за данный период в формате XXXX, где X - число от 0 до 9."""
+    """Функция принимает на вход список с транзакциями за выбранный период из функции 'get_period_transactions'.
+    Возвращает список номеров всех карт за данный период в формате *XXXX, где X - число от 0 до 9."""
 
     cards_number = []
 
