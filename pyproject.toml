@@ -23,6 +23,8 @@ pytest-cov = "^6.0.0"
 mypy = "^1.15.0"
 black = "^25.1.0"
 isort = "^6.0.1"
+pandas-stubs = "^2.2.3.250308"
+types-requests = "^2.32.0.20250306"
 
 [tool.black]
 line_length = 119
